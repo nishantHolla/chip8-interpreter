@@ -16,22 +16,13 @@ int main(void) {
     return 1;
   }
 
-  SDL_Window* window = SDL_CreateWindow("SDL Test", 640, 280, 0);
-  if (!window) {
-    SDL_Log("SDL_CreateWindow failed: %s", SDL_GetError());
-    return 2;
-  }
-
-  SDL_Renderer* renderer = SDL_CreateRenderer(window, NULL);
-  if (!renderer) {
-    SDL_Log("SDL_CreateRenderer failed: %s", SDL_GetError());
-    return 3;
-  }
-
-
   std::ifstream f("1-chip8-logo.ch8", std::ios::binary);
   std::shared_ptr memory = std::make_shared<C8I_Memory>(f);
   C8I_Io io(memory);
+
+  for (size_t i = 0; i < memory->screen_seg.limit; i++) {
+    C8I_MEMORY_ACCESS_PTR(memory.get(), screen_seg, i) = 0xf;
+  }
 
   using namespace std::chrono;
   const int fps = 60;
@@ -41,13 +32,9 @@ int main(void) {
     auto start = steady_clock::now();
 
     io.key.tick();
-    printf("[ ");
-    for (size_t i = 0; i < memory->key_seg.limit; i++) {
-      printf("%d ", (int)C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg, i));
+    if (io.screen.tick()) {
+      io.screen.update();
     }
-    printf("]\n");
-
-    SDL_RenderPresent(renderer);
 
     auto end = steady_clock::now();
     auto elapsed = duration_cast<milliseconds>(end - start);
@@ -56,8 +43,6 @@ int main(void) {
       std::this_thread::sleep_for(frame_duration - elapsed);
     }
   }
-
-  return 0;
 
   SDL_Quit();
   return 0;
