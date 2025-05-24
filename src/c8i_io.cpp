@@ -18,7 +18,7 @@ C8I_Keyboard::C8I_Keyboard(C8I_Memory& memory) :
 }
 
 /*
- * Perform keyboard actions of one CPU tick.
+ * Perform keyboard actions of one frame.
  * Returns true if it did any work in the tick else returns false.
  */
 bool C8I_Keyboard::tick(SDL_Scancode code, uint8_t set_value) {
@@ -104,7 +104,7 @@ C8I_Screen::C8I_Screen(C8I_Memory& memory) :
 }
 
 /*
- * Perform screen actions of one CPU tick.
+ * Perform screen actions of one frame.
  * This involves reading the screen segment of memory and updating the texture values.
  * Returns true if it did any work in the tick else returns false.
  */
@@ -175,7 +175,7 @@ C8I_Speaker::C8I_Speaker(C8I_Memory& memory) :
 }
 
 /*
- * Perform speaker actions of one CPU tick.
+ * Perform speaker actions of one frame.
  * This involves checking the timer to see if audio needs to be played or not.
  * Returns true if it did any work in the tick else returns false.
  */
@@ -271,7 +271,7 @@ C8I_Io::C8I_Io(C8I_Memory& memory) :
 }
 
 /*
- * Perform all IO actions of one CPU tick.
+ * Perform all IO actions of one frame.
  * This involves polling for inputs, performing tick operations of keyboard, screen and speaker.
  * Returns true if it did any work in the tick else returns false.
  */
@@ -294,10 +294,7 @@ bool C8I_Io::tick() {
   }
 
   // Screen
-  bool screen_updated = screen.tick();
-  if (screen_updated) {
-    screen.update();
-  }
+  screen.tick();
 
   // Speaker
   speaker.tick();

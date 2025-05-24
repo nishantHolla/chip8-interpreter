@@ -8,6 +8,9 @@
 #include "c8i_io.h"
 #include "c8i_cpu.h"
 
+#define C8I_FPS 60
+#define C8I_CPU_HZ 700
+
 class C8I_Process {
 public:
   C8I_Process(const std::string& rom_file_path);

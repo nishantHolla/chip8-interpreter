@@ -14,7 +14,7 @@ C8I_Timer::C8I_Timer(C8I_Memory& memory) :
 }
 
 /*
- * Perform timer actions of one CPU tick.
+ * Perform timer actions of one frame.
  * This involves decrementing the value of the two timers in memory.
  * Returns true if it did any work, else returns false.
  */

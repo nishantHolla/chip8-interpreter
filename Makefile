@@ -5,6 +5,7 @@ RELEASE_FLAGS=-O3
 SRC=src/*.cpp
 OUT=-o out/c8i
 LINK_LIB=-lC8I_SDL3
+ARGS=
 
 pre:
 	mkdir -p out
@@ -17,4 +18,4 @@ release: pre
 	$(CC) $(CFLAGS) $(RELEASE_FLAGS) $(OUT) $(SRC) $(LINK_LIB)
 
 runDebug: debug
-	cd out && ./c8i
+	cd out && ./c8i $(ARGS)

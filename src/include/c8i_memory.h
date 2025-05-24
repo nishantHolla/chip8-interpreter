@@ -25,6 +25,7 @@ public:
   const C8I_MemorySegment code_seg;
 
   C8I_Memory(std::istream& stream);
+  void debug();
   uint8_t operator[](int i) const;
   uint8_t& operator[](int i);
 

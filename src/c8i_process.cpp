@@ -4,8 +4,7 @@
 #include <fstream>
 #include <chrono>
 #include <thread>
-
-#define C8I_FPS 60
+#include <iostream>
 
 /////////////////////////////////////////////////
 //
@@ -32,26 +31,41 @@ C8I_Process::C8I_Process(const std::string& rom_file_path) :
 void C8I_Process::init_memory_for_testing() {
   // Initialize screen segement with some value
   for (size_t i = 0; i < memory.screen_seg.limit; i++) {
-    C8I_MEMORY_ACCESS(memory, screen_seg, i) = 0xf;
+    C8I_MEMORY_ACCESS(memory, screen_seg, i) = 0xf0;
   }
 
   // Initialize timer segment with some value
   C8I_MEMORY_ACCESS(memory, time_seg, 1) = 60;
 }
+
 /*
  * Execute the loaded program
  */
 void C8I_Process::execute() {
   using namespace std::chrono;
   const milliseconds frame_duration(1000 / C8I_FPS);
+  const int instructions_per_frame = C8I_CPU_HZ / C8I_FPS;
 
   while (true) {
     auto start = steady_clock::now();
 
     // io.tick returns false if user wants to quit
     if (!io.tick()) break;
-    cpu.tick();
+
+    // run multiple cpu instructions per frame
+    bool has_drawn = false;
+    for (int i = 0; i < instructions_per_frame; i++) {
+      if (has_drawn) {
+        break;
+      }
+      cpu.tick(&has_drawn);
+    }
+
+    // tick timer
     timer.tick();
+
+    // update screen
+    io.screen.update();
 
     auto end = steady_clock::now();
     auto elapsed = duration_cast<milliseconds>(end - start);

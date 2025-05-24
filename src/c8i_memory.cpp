@@ -80,6 +80,15 @@ C8I_Memory::C8I_Memory(std::istream& stream) :
 }
 
 /*
+ * Print the current state of memory to stdout
+ */
+void C8I_Memory::debug() {
+  for (size_t i = 0; i < C8I_MEMORY_SIZE; i++) {
+    printf("%02x ", mm[i]);
+  }
+}
+
+/*
  * Overload [] operator for memory access.
  * Runtime bound checking is done only if the __C8I_MEM_BOUND_CHECK__ is defined.
  */
