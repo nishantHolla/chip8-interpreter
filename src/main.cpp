@@ -24,9 +24,11 @@ int main(void) {
     C8I_MEMORY_ACCESS_PTR(memory.get(), screen_seg, i) = 0xf;
   }
 
+  C8I_MEMORY_ACCESS_PTR(memory.get(), time_seg, 1) = 60;
+
   using namespace std::chrono;
   const int fps = 60;
-  const milliseconds frame_duration(1000 / fps); // ~16ms
+  const milliseconds frame_duration(1000 / fps);
 
   while (running) {
     auto start = steady_clock::now();
@@ -35,11 +37,16 @@ int main(void) {
     if (io.screen.tick()) {
       io.screen.update();
     }
+    io.speaker.tick();
+    if (C8I_MEMORY_ACCESS_PTR(memory.get(), time_seg, 1) > 0) {
+      C8I_MEMORY_ACCESS_PTR(memory.get(), time_seg, 1) -= 1;
+    }
 
     auto end = steady_clock::now();
     auto elapsed = duration_cast<milliseconds>(end - start);
 
     if (elapsed < frame_duration) {
+      std::cout << "[INFO]: Frame buffer time: +" << (frame_duration - elapsed).count() << std::endl;
       std::this_thread::sleep_for(frame_duration - elapsed);
     }
   }
