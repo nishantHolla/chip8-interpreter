@@ -7,6 +7,7 @@
 
 #define C8I_MEMORY_SIZE 4096
 #define C8I_MEMORY_ACCESS(x, y, z) x[x.y.base + z]
+#define C8I_MEMORY_ACCESS_PTR(x, y, z) (*x)[x->y.base + z]
 
 struct C8I_MemorySegment {
   size_t base;
