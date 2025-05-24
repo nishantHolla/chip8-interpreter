@@ -14,24 +14,24 @@
 
 class C8I_Keyboard {
 public:
-  C8I_Keyboard(std::shared_ptr<C8I_Memory> memory);
+  C8I_Keyboard(C8I_Memory& memory);
   bool tick(SDL_Scancode code, uint8_t set_value);
   void debug();
 
 private:
-  std::shared_ptr<C8I_Memory> memory;
+  C8I_Memory& memory;
 
 };
 
 class C8I_Screen {
 public:
-  C8I_Screen(std::shared_ptr<C8I_Memory> memory);
+  C8I_Screen(C8I_Memory& memory);
   ~C8I_Screen();
   bool tick();
   void update();
 
 private:
-  std::shared_ptr<C8I_Memory> memory;
+  C8I_Memory& memory;
   SDL_Window* window;
   SDL_Renderer* renderer;
   SDL_Texture* screen_texture;
@@ -40,11 +40,11 @@ private:
 
 class C8I_Speaker {
 public:
-  C8I_Speaker(std::shared_ptr<C8I_Memory> memory);
+  C8I_Speaker(C8I_Memory& memory);
   bool tick();
 
 private:
-  std::shared_ptr<C8I_Memory> memory;
+  C8I_Memory& memory;
   SDL_AudioSpec spec;
   SDL_AudioStream* stream;
   int current_sine_sample;
@@ -62,7 +62,7 @@ public:
   C8I_Screen screen;
   C8I_Speaker speaker;
 
-  C8I_Io(std::shared_ptr<C8I_Memory> memory);
+  C8I_Io(C8I_Memory& memory);
   bool tick();
 };
 

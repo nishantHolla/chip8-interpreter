@@ -16,7 +16,7 @@ public:
 
 private:
   std::ifstream stream;
-  std::shared_ptr<C8I_Memory> memory;
+  C8I_Memory memory;
   C8I_Timer timer;
   C8I_Io io;
   C8I_Cpu cpu;

@@ -25,9 +25,9 @@ C8I_Instruction::C8I_Instruction(uint16_t* inst) :
 /*
  * Construct the CPU with given pointer to the shared memory.
  */
-C8I_Cpu::C8I_Cpu(std::shared_ptr<C8I_Memory> memory) :
+C8I_Cpu::C8I_Cpu(C8I_Memory& memory) :
   memory(memory),
-  pc(memory->code_seg.base),
+  pc(memory.code_seg.base),
   I(0),
   call_stack{0},
   register_set{0} {

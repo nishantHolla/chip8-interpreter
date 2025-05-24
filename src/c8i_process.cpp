@@ -18,7 +18,7 @@
  */
 C8I_Process::C8I_Process(const std::string& rom_file_path) :
   stream(init_stream(rom_file_path)),
-  memory(std::make_shared<C8I_Memory>(stream)),
+  memory(stream),
   timer(memory),
   io(memory),
   cpu(memory) {
@@ -31,12 +31,12 @@ C8I_Process::C8I_Process(const std::string& rom_file_path) :
  */
 void C8I_Process::init_memory_for_testing() {
   // Initialize screen segement with some value
-  for (size_t i = 0; i < memory->screen_seg.limit; i++) {
-    C8I_MEMORY_ACCESS_PTR(memory.get(), screen_seg, i) = 0xf;
+  for (size_t i = 0; i < memory.screen_seg.limit; i++) {
+    C8I_MEMORY_ACCESS(memory, screen_seg, i) = 0xf;
   }
 
   // Initialize timer segment with some value
-  C8I_MEMORY_ACCESS_PTR(memory.get(), time_seg, 1) = 60;
+  C8I_MEMORY_ACCESS(memory, time_seg, 1) = 60;
 }
 /*
  * Execute the loaded program

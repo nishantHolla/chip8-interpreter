@@ -1,9 +1,6 @@
 #ifndef C8I_CPU_H_
 #define C8I_CPU_H_
 
-#include <memory>
-#include <vector>
-
 #include "c8i_memory.h"
 #include "c8i_io.h"
 
@@ -19,12 +16,12 @@ struct C8I_Instruction {
 
 class C8I_Cpu {
 public:
-  C8I_Cpu(std::shared_ptr<C8I_Memory> memory);
+  C8I_Cpu(C8I_Memory& memory);
   bool tick();
   void debug(const C8I_Instruction& instruction);
 
 private:
-  std::shared_ptr<C8I_Memory> memory;
+  C8I_Memory& memory;
   uint16_t pc;
   uint16_t I;
   uint16_t call_stack[C8I_MAX_CALL_STACK_SIZE];

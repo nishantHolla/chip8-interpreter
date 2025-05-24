@@ -7,11 +7,11 @@
 
 class C8I_Timer {
 public:
-  C8I_Timer(std::shared_ptr<C8I_Memory> memory);
+  C8I_Timer(C8I_Memory& memory);
   bool tick();
 
 private:
-  std::shared_ptr<C8I_Memory> memory;
+  C8I_Memory memory;
 };
 
 #endif // !C8I_TIMER_H_

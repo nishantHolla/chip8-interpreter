@@ -11,9 +11,9 @@ extern bool running;
 /////////////////////////////////////////////////
 
 /*
- * Construct the keyboard device with given pointer to the shared memory.
+ * Construct the keyboard device with given reference to the shared memory.
  */
-C8I_Keyboard::C8I_Keyboard(std::shared_ptr<C8I_Memory> memory) :
+C8I_Keyboard::C8I_Keyboard(C8I_Memory& memory) :
   memory(memory) {
 }
 
@@ -24,22 +24,22 @@ C8I_Keyboard::C8I_Keyboard(std::shared_ptr<C8I_Memory> memory) :
 bool C8I_Keyboard::tick(SDL_Scancode code, uint8_t set_value) {
   uint8_t* access_memory;
   switch (code) {
-      case SDLK_x: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  0)); break;
-      case SDLK_1: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  1)); break;
-      case SDLK_2: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  2)); break;
-      case SDLK_3: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  3)); break;
-      case SDLK_q: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  4)); break;
-      case SDLK_w: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  5)); break;
-      case SDLK_e: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  6)); break;
-      case SDLK_a: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  7)); break;
-      case SDLK_s: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  8)); break;
-      case SDLK_d: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  9)); break;
-      case SDLK_z: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg, 10)); break;
-      case SDLK_c: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg, 11)); break;
-      case SDLK_4: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg, 12)); break;
-      case SDLK_r: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg, 13)); break;
-      case SDLK_f: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg, 14)); break;
-      case SDLK_v: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg, 15)); break;
+      case SDLK_x: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg,  0)); break;
+      case SDLK_1: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg,  1)); break;
+      case SDLK_2: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg,  2)); break;
+      case SDLK_3: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg,  3)); break;
+      case SDLK_q: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg,  4)); break;
+      case SDLK_w: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg,  5)); break;
+      case SDLK_e: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg,  6)); break;
+      case SDLK_a: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg,  7)); break;
+      case SDLK_s: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg,  8)); break;
+      case SDLK_d: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg,  9)); break;
+      case SDLK_z: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg, 10)); break;
+      case SDLK_c: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg, 11)); break;
+      case SDLK_4: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg, 12)); break;
+      case SDLK_r: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg, 13)); break;
+      case SDLK_f: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg, 14)); break;
+      case SDLK_v: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg, 15)); break;
       default:     access_memory = nullptr;
   }
 
@@ -55,8 +55,8 @@ bool C8I_Keyboard::tick(SDL_Scancode code, uint8_t set_value) {
  */
 void C8I_Keyboard::debug() {
   printf("[ ");
-  for (size_t i = 0; i < memory->key_seg.limit; i++) {
-    printf("%d ", (int)C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg, i));
+  for (size_t i = 0; i < memory.key_seg.limit; i++) {
+    printf("%d ", (int)C8I_MEMORY_ACCESS(memory, key_seg, i));
   }
   printf("]\n");
 }
@@ -68,9 +68,9 @@ void C8I_Keyboard::debug() {
 /////////////////////////////////////////////////
 
 /*
- * Construct the screen device with the given pointer to shared memory.
+ * Construct the screen device with the given reference to shared memory.
  */
-C8I_Screen::C8I_Screen(std::shared_ptr<C8I_Memory> memory) :
+C8I_Screen::C8I_Screen(C8I_Memory& memory) :
   memory(memory) {
 
   // Create SDL Window
@@ -116,8 +116,8 @@ bool C8I_Screen::tick() {
   SDL_LockTexture(screen_texture, NULL, (void**)&pixels, &pitch);
 
   int pixel_count = 0;
-  for (size_t i = 0; i < memory->screen_seg.limit; i++) {
-    uint8_t screen_pixel_cluster = C8I_MEMORY_ACCESS_PTR(memory.get(), screen_seg, i);
+  for (size_t i = 0; i < memory.screen_seg.limit; i++) {
+    uint8_t screen_pixel_cluster = C8I_MEMORY_ACCESS(memory, screen_seg, i);
 
     for (int j = 7; j > -1; j--) {
       uint32_t* texture_pixel = &(pixels[pixel_count + (7 - j)]);
@@ -162,9 +162,9 @@ C8I_Screen::~C8I_Screen() {
 /////////////////////////////////////////////////
 
 /*
- * Construct the speaker device with the given pointer to shared memory
+ * Construct the speaker device with the given reference to shared memory
  */
-C8I_Speaker::C8I_Speaker(std::shared_ptr<C8I_Memory> memory) :
+C8I_Speaker::C8I_Speaker(C8I_Memory& memory) :
   memory(memory),
   spec{0, 0, 0} {
   spec.channels = 1;
@@ -184,7 +184,7 @@ bool C8I_Speaker::tick() {
 
   bool did_work = false;
 
-  uint8_t sound_timer_value = C8I_MEMORY_ACCESS_PTR(memory.get(), time_seg, 1);
+  uint8_t sound_timer_value = C8I_MEMORY_ACCESS(memory, time_seg, 1);
   bool is_playing = isPlaying();
 
   if (sound_timer_value > 0 && !is_playing) {
@@ -262,9 +262,9 @@ void C8I_Speaker::check() {
 
 /*
  * Initialize the IO of the interpreter with an instance of keyboard, screen and speaker with the
- * given pointer to shared memory.
+ * given reference to shared memory.
  */
-C8I_Io::C8I_Io(std::shared_ptr<C8I_Memory> memory) :
+C8I_Io::C8I_Io(C8I_Memory& memory) :
   key(memory),
   screen(memory),
   speaker(memory) {
