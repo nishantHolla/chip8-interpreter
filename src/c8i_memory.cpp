@@ -53,7 +53,7 @@ C8I_MemorySegment::C8I_MemorySegment(size_t base, size_t limit) :
 /////////////////////////////////////////////////
 
 /*
- * Construct a memory with the input stream for the ROM that needs to be loaded onto memory.
+ * Construct memory with the input stream for the ROM that needs to be loaded onto memory.
  */
 C8I_Memory::C8I_Memory(std::istream& stream) :
   font_seg(2, 80),

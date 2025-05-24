@@ -7,6 +7,7 @@
 
 #include "c8i_memory.h"
 #include "c8i_io.h"
+#include "c8i_timer.h"
 
 bool running = true;
 
@@ -24,6 +25,7 @@ int main(void) {
     C8I_MEMORY_ACCESS_PTR(memory.get(), screen_seg, i) = 0xf;
   }
 
+  C8I_Timer timer(memory);
   C8I_MEMORY_ACCESS_PTR(memory.get(), time_seg, 1) = 60;
 
   using namespace std::chrono;
@@ -38,15 +40,13 @@ int main(void) {
       io.screen.update();
     }
     io.speaker.tick();
-    if (C8I_MEMORY_ACCESS_PTR(memory.get(), time_seg, 1) > 0) {
-      C8I_MEMORY_ACCESS_PTR(memory.get(), time_seg, 1) -= 1;
-    }
+    timer.tick();
 
     auto end = steady_clock::now();
     auto elapsed = duration_cast<milliseconds>(end - start);
 
     if (elapsed < frame_duration) {
-      std::cout << "[INFO]: Frame buffer time: +" << (frame_duration - elapsed).count() << std::endl;
+      // std::cout << "[INFO]: Frame buffer time: +" << (frame_duration - elapsed).count() << std::endl;
       std::this_thread::sleep_for(frame_duration - elapsed);
     }
   }
