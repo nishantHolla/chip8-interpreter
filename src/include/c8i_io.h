@@ -3,7 +3,7 @@
 
 #define C8I_SCREEN_WIDTH 64
 #define C8I_SCREEN_HEIGHT 32
-#define C8I_SCREEN_SCALE 10
+#define C8I_SCREEN_SCALE 16
 #define C8I_SCALED_SCREEN_WIDTH (C8I_SCREEN_WIDTH * C8I_SCREEN_SCALE)
 #define C8I_SCALED_SCREEN_HEIGHT (C8I_SCREEN_HEIGHT * C8I_SCREEN_SCALE)
 #define C8I_AUDIO_SAMPLE_RATE 8000
@@ -15,7 +15,7 @@
 class C8I_Keyboard {
 public:
   C8I_Keyboard(std::shared_ptr<C8I_Memory> memory);
-  bool tick();
+  bool tick(SDL_Scancode code, uint8_t set_value);
   void debug();
 
 private:
@@ -63,6 +63,7 @@ public:
   C8I_Speaker speaker;
 
   C8I_Io(std::shared_ptr<C8I_Memory> memory);
+  bool tick();
 };
 
 #endif // !C8I_IO_H_

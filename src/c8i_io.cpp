@@ -19,78 +19,35 @@ C8I_Keyboard::C8I_Keyboard(std::shared_ptr<C8I_Memory> memory) :
 
 /*
  * Perform keyboard actions of one CPU tick.
- * This involves polling for keyboard inputs from SDL and updating the memory.
  * Returns true if it did any work in the tick else returns false.
  */
-bool C8I_Keyboard::tick() {
-  bool did_work = false;
-
-  // Poll SDL Events
-  SDL_Event event;
-  while (SDL_PollEvent(&event)) {
-
-    // If quit, set the global running flag to false
-    if (event.type == SDL_EVENT_QUIT) {
-      did_work = true;
-      running = false;
-    }
-
-    // If key is pressed, set the corresponding key location in memory to 1
-    else if (event.type == SDL_EVENT_KEY_DOWN) {
-      did_work = true;
-      switch (event.key.keysym.scancode) {
-        case SDLK_x: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  0) = 1; break;
-        case SDLK_1: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  1) = 1; break;
-        case SDLK_2: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  2) = 1; break;
-        case SDLK_3: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  3) = 1; break;
-        case SDLK_q: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  4) = 1; break;
-        case SDLK_w: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  5) = 1; break;
-        case SDLK_e: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  6) = 1; break;
-        case SDLK_a: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  7) = 1; break;
-        case SDLK_s: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  8) = 1; break;
-        case SDLK_d: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  9) = 1; break;
-        case SDLK_z: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg, 10) = 1; break;
-        case SDLK_c: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg, 11) = 1; break;
-        case SDLK_4: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg, 12) = 1; break;
-        case SDLK_r: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg, 13) = 1; break;
-        case SDLK_f: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg, 14) = 1; break;
-        case SDLK_v: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg, 15) = 1; break;
-
-        default:
-          did_work = false;
-          break;
-      }
-    }
-
-    // If key is released, set the corresponding key location in memory to 0
-    else if (event.type == SDL_EVENT_KEY_UP) {
-      did_work = true;
-      switch (event.key.keysym.scancode) {
-        case SDLK_x: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  0) = 0; break;
-        case SDLK_1: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  1) = 0; break;
-        case SDLK_2: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  2) = 0; break;
-        case SDLK_3: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  3) = 0; break;
-        case SDLK_q: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  4) = 0; break;
-        case SDLK_w: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  5) = 0; break;
-        case SDLK_e: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  6) = 0; break;
-        case SDLK_a: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  7) = 0; break;
-        case SDLK_s: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  8) = 0; break;
-        case SDLK_d: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  9) = 0; break;
-        case SDLK_z: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg, 10) = 0; break;
-        case SDLK_c: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg, 11) = 0; break;
-        case SDLK_4: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg, 12) = 0; break;
-        case SDLK_r: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg, 13) = 0; break;
-        case SDLK_f: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg, 14) = 0; break;
-        case SDLK_v: C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg, 15) = 0; break;
-
-        default:
-          did_work = false;
-          break;
-      }
-    }
+bool C8I_Keyboard::tick(SDL_Scancode code, uint8_t set_value) {
+  uint8_t* access_memory;
+  switch (code) {
+      case SDLK_x: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  0)); break;
+      case SDLK_1: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  1)); break;
+      case SDLK_2: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  2)); break;
+      case SDLK_3: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  3)); break;
+      case SDLK_q: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  4)); break;
+      case SDLK_w: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  5)); break;
+      case SDLK_e: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  6)); break;
+      case SDLK_a: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  7)); break;
+      case SDLK_s: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  8)); break;
+      case SDLK_d: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg,  9)); break;
+      case SDLK_z: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg, 10)); break;
+      case SDLK_c: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg, 11)); break;
+      case SDLK_4: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg, 12)); break;
+      case SDLK_r: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg, 13)); break;
+      case SDLK_f: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg, 14)); break;
+      case SDLK_v: access_memory = &(C8I_MEMORY_ACCESS_PTR(memory.get(), key_seg, 15)); break;
+      default:     access_memory = nullptr;
   }
 
-  return did_work;
+  if (access_memory) {
+    *access_memory = set_value;
+  }
+
+  return (access_memory != nullptr);
 }
 
 /*
@@ -311,4 +268,39 @@ C8I_Io::C8I_Io(std::shared_ptr<C8I_Memory> memory) :
   key(memory),
   screen(memory),
   speaker(memory) {
+}
+
+/*
+ * Perform all IO actions of one CPU tick.
+ * This involves polling for inputs, performing tick operations of keyboard, screen and speaker.
+ * Returns true if it did any work in the tick else returns false.
+ */
+bool C8I_Io::tick() {
+  // Keyboard
+  SDL_Event event;
+  while (SDL_PollEvent(&event)) {
+    // If quit, return with no work done
+    if (event.type == SDL_EVENT_QUIT) {
+      return false;
+    }
+
+    // If key press or release, call tick function of keyboard
+    else if (event.type == SDL_EVENT_KEY_UP) {
+      key.tick(event.key.keysym.scancode, 0);
+    }
+    else if (event.type == SDL_EVENT_KEY_DOWN) {
+      key.tick(event.key.keysym.scancode, 1);
+    }
+  }
+
+  // Screen
+  bool screen_updated = screen.tick();
+  if (screen_updated) {
+    screen.update();
+  }
+
+  // Speaker
+  speaker.tick();
+
+  return true;
 }

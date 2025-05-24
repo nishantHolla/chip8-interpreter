@@ -1,15 +1,7 @@
 #include <iostream>
-#include <fstream>
-#include <memory>
-#include <chrono>
-#include <thread>
+
 #include "C8I_SDL3/SDL.h"
-
-#include "c8i_memory.h"
-#include "c8i_io.h"
-#include "c8i_timer.h"
-
-bool running = true;
+#include "c8i_process.h"
 
 int main(void) {
   if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
@@ -17,39 +9,9 @@ int main(void) {
     return 1;
   }
 
-  std::ifstream f("1-chip8-logo.ch8", std::ios::binary);
-  std::shared_ptr memory = std::make_shared<C8I_Memory>(f);
-  C8I_Io io(memory);
-
-  for (size_t i = 0; i < memory->screen_seg.limit; i++) {
-    C8I_MEMORY_ACCESS_PTR(memory.get(), screen_seg, i) = 0xf;
-  }
-
-  C8I_Timer timer(memory);
-  C8I_MEMORY_ACCESS_PTR(memory.get(), time_seg, 1) = 60;
-
-  using namespace std::chrono;
-  const int fps = 60;
-  const milliseconds frame_duration(1000 / fps);
-
-  while (running) {
-    auto start = steady_clock::now();
-
-    io.key.tick();
-    if (io.screen.tick()) {
-      io.screen.update();
-    }
-    io.speaker.tick();
-    timer.tick();
-
-    auto end = steady_clock::now();
-    auto elapsed = duration_cast<milliseconds>(end - start);
-
-    if (elapsed < frame_duration) {
-      // std::cout << "[INFO]: Frame buffer time: +" << (frame_duration - elapsed).count() << std::endl;
-      std::this_thread::sleep_for(frame_duration - elapsed);
-    }
-  }
+  C8I_Process process("1-chip8-logo.ch8");
+  process.init_memory_for_testing();
+  process.execute();
 
   SDL_Quit();
   return 0;
