@@ -1,6 +1,6 @@
 CC=g++
-CFLAGS=-Wall -Wextra -pedantic
-DEBUG_FLAGS=-ggdb -fsanitize=address
+CFLAGS=-Wall -Wextra -pedantic -Isrc/include
+DEBUG_FLAGS=-ggdb -fsanitize=address -D__C8I_MEM_BOUND_CHECK__
 RELEASE_FLAGS=-O3
 SRC=src/*.cpp
 OUT=-o out/c8i
@@ -16,4 +16,4 @@ release: pre
 	$(CC) $(CFLAGS) $(RELEASE_FLAGS) $(OUT) $(SRC)
 
 runDebug: debug
-	./out/c8i
+	cd out && ./c8i
