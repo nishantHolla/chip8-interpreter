@@ -20,7 +20,8 @@ C8I_Process::C8I_Process(const std::string& rom_file_path) :
   stream(init_stream(rom_file_path)),
   memory(std::make_shared<C8I_Memory>(stream)),
   timer(memory),
-  io(memory) {
+  io(memory),
+  cpu(memory) {
   stream.close();
 }
 
@@ -49,6 +50,7 @@ void C8I_Process::execute() {
 
     // io.tick returns false if user wants to quit
     if (!io.tick()) break;
+    cpu.tick();
     timer.tick();
 
     auto end = steady_clock::now();
