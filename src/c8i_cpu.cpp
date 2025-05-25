@@ -57,8 +57,11 @@ bool C8I_Cpu::tick(bool* has_drawn) {
   if (has_drawn) {
     *has_drawn = false;
   }
-  // printf("Instruction: ");
-  // debug_instruction(i);
+
+#ifdef __C8I_DEBUG_STATE__
+  printf("Instruction: ");
+  debug_instruction(i);
+#endif //__C8I_DEBUG_STATE__
 
   // Execute
 
@@ -237,7 +240,11 @@ bool C8I_Cpu::tick(bool* has_drawn) {
 
   // CXNN - Generate random number and mask it with NN
   else if (i.n3 == 0xC) {
-    register_set[i.n2] = (rand() % 256) & i.nl;
+    uint8_t rand_number = rand() % 256;
+#ifdef __C8I_DEBUG_STATE__
+    printf("rn: %d mask: %02x result: %02x\n", rand_number, i.nl, rand_number & i.nl);
+#endif //__C8I_DEBUG_STATE__
+    register_set[i.n2] = rand_number & i.nl;
     return execution_callback(i, C8I_EXEC_SUCCESS);
   }
 
@@ -356,7 +363,7 @@ bool C8I_Cpu::tick(bool* has_drawn) {
     // FX29 - Set I to the memory address of sprite data correspoinding to the hexadecimal
     //        digit stored in register VX
     else if (i.nl == 0x29) {
-      I = memory.font_seg.base + (i.n2 * 5);
+      I = memory.font_seg.base + (register_set[i.n2] * 5);
       return execution_callback(i, C8I_EXEC_SUCCESS);
     }
 
@@ -395,8 +402,6 @@ bool C8I_Cpu::tick(bool* has_drawn) {
   }
 
   return execution_callback(i, C8I_EXEC_ERR_UNKNOWN_INST);
-  // debug_state();
-  // printf("------------------------\n");
 }
 
 /*
@@ -404,6 +409,21 @@ bool C8I_Cpu::tick(bool* has_drawn) {
  * State value tells how the execution of the instruction went
  */
 bool C8I_Cpu::execution_callback(const C8I_Instruction& i, int16_t state) {
+#ifdef __C8I_DEBUG_STATE__
+  debug_state();
+  while (true) {
+    printf("> ");
+    char command[10];
+    fgets(command, 10, stdin);
+    if (strcmp(command, "n\n") == 0) {
+      break;
+    }
+    int address = (int)strtol(command, NULL, 16);
+    printf("MEMORY[%d] = %d\n", address, C8I_MEMORY_ACCESS_RAW(memory, address));
+  }
+  printf("------------------------\n");
+#endif //__C8I_DEBUG_STATE__
+
   char message[100];
 
   if (state == C8I_EXEC_SUCCESS) {
