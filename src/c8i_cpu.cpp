@@ -191,7 +191,7 @@ bool C8I_Cpu::tick(bool* has_drawn) {
     // 8XY6 - Store the value of register VY shifted right one bit in register VX
     //        Set register VF to the least significant bit prior to the shift
     else if (i.n0 == 0x6) {
-      bool flag = register_set[i.n2] & 1;
+      bool flag = register_set[i.n1] & 1;
       register_set[i.n2] = register_set[i.n1] >> 1;
       register_set[15] = flag;
       return execution_callback(i, C8I_EXEC_SUCCESS);
@@ -209,7 +209,7 @@ bool C8I_Cpu::tick(bool* has_drawn) {
     // 8XYE - Store the value of register VY shifted left one bit in register VX
     //        Set VF to most significant bit prior to the shift
     else if (i.n0 == 0xE) {
-      bool flag = register_set[i.n2] >> 7;
+      bool flag = register_set[i.n1] >> 7;
       register_set[i.n2] = register_set[i.n1] << 1;
       register_set[15] = flag;
       return execution_callback(i, C8I_EXEC_SUCCESS);
@@ -309,9 +309,9 @@ bool C8I_Cpu::tick(bool* has_drawn) {
     }
 
     // EXA1 - Skip the following instruction if the key corresponding to the hex value currently
-    //        storked in register VX is not pressed
+    //        stored in register VX is not pressed
     else if (i.nl == 0xA1) {
-      uint8_t key = register_set[i.n3];
+      uint8_t key = register_set[i.n2];
       if (C8I_MEMORY_ACCESS(memory, key_seg, key) == 0) {
         pc += 2;
       }
@@ -334,7 +334,7 @@ bool C8I_Cpu::tick(bool* has_drawn) {
       for (size_t idx = 0; idx < memory.key_seg.limit; idx++) {
         uint8_t key = C8I_MEMORY_ACCESS(memory, key_seg, idx);
         if (key) {
-          register_set[i.n2] = key;
+          register_set[i.n2] = idx;
           return execution_callback(i, C8I_EXEC_SUCCESS);
         }
       }
@@ -372,7 +372,7 @@ bool C8I_Cpu::tick(bool* has_drawn) {
       uint8_t val = register_set[i.n2];
 
       for (int b = 2; b > -1; b--, val /= 10) {
-        int8_t digit = val ? val % 10 : 0;
+        int8_t digit = val % 10;
         C8I_MEMORY_ACCESS_RAW(memory, I+b) = digit;
       }
 
