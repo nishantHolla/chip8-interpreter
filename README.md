@@ -10,10 +10,13 @@ the CHIP-8 test suite developed by [Timendus](https://github.com/Timendus/chip8-
 <br />
 
 ## Screenshots
-
-![rock-paper-scissors](./docs/rock-paper-scissors-ss.png)
-![slippery-slope](./docs/slippery-slope-ss.png)
-![tetris](./docs/tetris-ss.png)
+<p align="center">
+  <img src="./docs/rock-paper-scissors-ss.png" width="50%">
+  <br /> <br />
+  <img src="./docs/slippery-slope-ss.png" width="50%">
+  <br /> <br />
+  <img src="./docs/tetris-ss.png" width="50%">
+</p>
 
 ## Usage
 
