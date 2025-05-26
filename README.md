@@ -42,15 +42,19 @@ make release
 
 ### Process
 
-![./docs/implementation-details-process.png](./docs/implementation-details-process.png)
+<p align="center">
+  <img src="./docs/implementation-details-process.png">
+</p>
+
 <br />
 Process is a higher-level abstraction of a running CHIP-8 program. Each process has its own memory,
 CPU and IO devices. This means the interpreter can run multiple chip 8 programs concurrently
 if the host device can support it.
 
 ### Memory
-
-![./docs/implementation-details-memory.png](./docs/implementation-details-memory.png)
+<p align="center">
+  <img src="./docs/implementation-details-memory.png">
+</p>
 <br />
 The memory in the CHIP-8 interpreter is 4KB. Each CHIP-8 instruction is 16 bits wide and is stored in
 memory in big-endian way. The program is loaded starting from address `0x200`. Memory address `0x00`
@@ -77,14 +81,18 @@ value is non-zero.
 
 #### Keyboard
 
-![./docs/implementation-details-keyboard.png](./docs/implementation-details-keyboard.png)
+<p align="center">
+  <img src="./docs/implementation-details-keyboard.png">
+</p>
 
 The CHIP-8 accepts input from a 16-key keypad from `0` to `F`. These keys have been mapped to a standard
 QWERTY keyboard as shown above.
 
 #### Screen
 
-![./docs/implementation-details-screen.png](./docs/implementation-details-screen.png)
+<p align="center">
+  <img src="./docs/implementation-details-screen.png">
+</p>
 
 The CHIP-8 interpreter has access to a `64X32` pixel wide screen. The top left corner of the screen
 is assigned the coordinates `(0x00, 0x00)` and the bottom right corner is assigned the coordinates`(0x3F, 0x1f)`.
