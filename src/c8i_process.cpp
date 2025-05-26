@@ -49,6 +49,7 @@ void C8I_Process::execute() {
   while (true) {
     auto start = steady_clock::now();
 
+    io.key.debug();
     // io.tick returns false if user wants to quit
     if (!io.tick()) break;
 

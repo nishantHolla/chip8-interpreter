@@ -10,13 +10,13 @@
 #define C8I_AUDIO_SAMPLE_RATE 8000
 #define C8I_AUDIO_FREQUENCY 300
 
-#include "C8I_SDL3/SDL.h"
+#include <SDL3/SDL.h>
 #include "c8i_memory.h"
 
 class C8I_Keyboard {
 public:
   C8I_Keyboard(C8I_Memory& memory);
-  bool tick(SDL_Scancode code, uint8_t set_value);
+  bool tick(SDL_Keycode code, uint8_t set_value);
   void debug();
 
 private:

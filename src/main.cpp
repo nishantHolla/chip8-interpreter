@@ -1,8 +1,8 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <SDL3/SDL.h>
 
-#include "C8I_SDL3/SDL.h"
 #include "c8i_process.h"
 
 int main(int argc, char* argv[]) {

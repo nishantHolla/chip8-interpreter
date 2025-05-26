@@ -1,6 +1,7 @@
 #include <stdexcept>
+#include <SDL3/SDL.h>
+
 #include "c8i_io.h"
-#include "C8I_SDL3/SDL.h"
 
 extern bool running;
 
@@ -21,25 +22,25 @@ C8I_Keyboard::C8I_Keyboard(C8I_Memory& memory) :
  * Perform keyboard actions of one frame.
  * Returns true if it did any work in the tick else returns false.
  */
-bool C8I_Keyboard::tick(SDL_Scancode code, uint8_t set_value) {
+bool C8I_Keyboard::tick(SDL_Keycode code, uint8_t set_value) {
   uint8_t* access_memory;
   switch (code) {
-      case SDLK_x: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg,  0)); break;
+      case SDLK_X: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg,  0)); break;
       case SDLK_1: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg,  1)); break;
       case SDLK_2: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg,  2)); break;
       case SDLK_3: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg,  3)); break;
-      case SDLK_q: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg,  4)); break;
-      case SDLK_w: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg,  5)); break;
-      case SDLK_e: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg,  6)); break;
-      case SDLK_a: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg,  7)); break;
-      case SDLK_s: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg,  8)); break;
-      case SDLK_d: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg,  9)); break;
-      case SDLK_z: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg, 10)); break;
-      case SDLK_c: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg, 11)); break;
+      case SDLK_Q: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg,  4)); break;
+      case SDLK_W: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg,  5)); break;
+      case SDLK_E: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg,  6)); break;
+      case SDLK_A: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg,  7)); break;
+      case SDLK_S: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg,  8)); break;
+      case SDLK_D: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg,  9)); break;
+      case SDLK_Z: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg, 10)); break;
+      case SDLK_C: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg, 11)); break;
       case SDLK_4: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg, 12)); break;
-      case SDLK_r: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg, 13)); break;
-      case SDLK_f: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg, 14)); break;
-      case SDLK_v: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg, 15)); break;
+      case SDLK_R: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg, 13)); break;
+      case SDLK_F: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg, 14)); break;
+      case SDLK_V: access_memory = &(C8I_MEMORY_ACCESS(memory, key_seg, 15)); break;
       default:     access_memory = nullptr;
   }
 
@@ -166,10 +167,7 @@ C8I_Screen::~C8I_Screen() {
  */
 C8I_Speaker::C8I_Speaker(C8I_Memory& memory) :
   memory(memory),
-  spec{0, 0, 0} {
-  spec.channels = 1;
-  spec.format = SDL_AUDIO_F32;
-  spec.freq = C8I_AUDIO_SAMPLE_RATE;
+  spec{SDL_AUDIO_F32, 1, C8I_AUDIO_SAMPLE_RATE} {
   stream = SDL_OpenAudioDeviceStream(0xFFFFFFFFu, &spec, NULL, NULL);
   current_sine_sample = 0;
 }
@@ -286,10 +284,10 @@ bool C8I_Io::tick() {
 
     // If key press or release, call tick function of keyboard
     else if (event.type == SDL_EVENT_KEY_UP) {
-      key.tick(event.key.keysym.scancode, 0);
+      key.tick(event.key.key, 0);
     }
     else if (event.type == SDL_EVENT_KEY_DOWN) {
-      key.tick(event.key.keysym.scancode, 1);
+      key.tick(event.key.key, 1);
     }
   }
 
