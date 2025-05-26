@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Check if executable exists
 if [ ! -e ./out/c8i ]; then
