@@ -10,12 +10,17 @@ ARGS=
 pre:
 	mkdir -p out
 
-
 debug: pre
 	$(CC) $(CFLAGS) $(DEBUG_FLAGS) $(OUT) $(SRC) $(LINK_LIB)
+
+debugState: pre
+	$(CC) $(CFLAGS) -D__C8I_DEBUG_STATE__ $(DEBUG_FLAGS) $(OUT) $(SRC) $(LINK_LIB)
 
 release: pre
 	$(CC) $(CFLAGS) $(RELEASE_FLAGS) $(OUT) $(SRC) $(LINK_LIB)
 
 runDebug: debug
+	cd out && ./c8i $(ARGS)
+
+runDebugState: debugState
 	cd out && ./c8i $(ARGS)
